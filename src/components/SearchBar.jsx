@@ -1,4 +1,7 @@
-function SearchBar() {
+import { useState } from "react";
+
+function SearchBar({ onSearch }) {
+  const [searchQuery, setSearchQuery] = useState("");
   return (
     <label className="input w-full input-bordered flex items-center gap-2">
       <svg
@@ -17,7 +20,18 @@ function SearchBar() {
           <path d="m21 21-4.3-4.3"></path>
         </g>
       </svg>
-      <input type="search" required placeholder="Search" />
+      <input
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSearch(searchQuery);
+          }
+        }}
+        type="search"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        required
+        placeholder="Search"
+      />
     </label>
   );
 }

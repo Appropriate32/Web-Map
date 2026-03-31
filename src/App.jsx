@@ -2,6 +2,9 @@ import SearchBar from "./components/SearchBar";
 import MapView from "./components/MapView";
 
 function App() {
+  const handleSearch = (query) => {
+    console.log(`${query} has been received!`);
+  };
   return (
     <div className="min-h-screen bg-base-300 p-4 md:p-8 flex flex-col">
       <header className="mb-6">
@@ -18,7 +21,7 @@ function App() {
           <div className="card bg-base-100 shadow-xl border border-base-content/10 ">
             <div className="card-body p-4">
               <h2 className="card-title text-lg mb-2">Search Location</h2>
-              <SearchBar></SearchBar>
+              <SearchBar onSearch={handleSearch}></SearchBar>
             </div>
           </div>
 
