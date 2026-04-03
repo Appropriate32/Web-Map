@@ -1,9 +1,54 @@
 import SearchBar from "./components/SearchBar";
 import MapView from "./components/MapView";
+import { useState } from "react";
 
 function App() {
-  const handleSearch = (query) => {
-    console.log(`${query} has been received!`);
+  const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSearch = async (query) => {
+    const q = query.trim();
+    if (!q) return;
+    setLoading(true);
+    setError("");
+    try {
+      const params = new URLSearchParams({
+        q,
+        format: "json",
+        limit: "1",
+        addressdetails: "1",
+      });
+
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "User-Agent": "GeoFinder/1.0 (your@email)",
+          },
+        },
+      );
+      if (!res.ok) throw new Error("Geocoding failed");
+      const data = await res.json();
+      if (!data.length) {
+        setError("No location found");
+        setLocation(null);
+      } else {
+        const { lat, lon, display_name, address } = data[0];
+        setLocation({
+          lat: Number(lat),
+          lon: Number(lon),
+          display_name,
+          address,
+        });
+      }
+    } catch (err) {
+      setError(err.message || "Network error");
+      setLocation(null);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="min-h-screen bg-base-300 p-4 md:p-8 flex flex-col">
